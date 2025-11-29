@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+
+{% block title %}مدیریت چت‌ها - Mailgram{% endblock %}
+
+{% block content %}
+<div class="admin-chats">
+    <h1>مدیریت چت‌ها</h1>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">لیست پیام‌ها</div>
+        <div class="admin-card-body">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>فرستنده</th>
+                            <th>گیرنده</th>
+                            <th>گروه</th>
+                            <th>نوع</th>
+                            <th>محتوای پیام</th>
+                            <th>زمان ارسال</th>
+                            <th>وضعیت</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for message in messages %}
+                        <tr>
+                            <td>{{ message.id }}</td>
+                            <td>{{ message.sender.name }} ({{ message.sender.email_id }})</td>
+                            <td>
+                                {% if message.receiver %}
+                                    {{ message.receiver.name }} ({{ message.receiver.email_id }})
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if message.group %}
+                                    {{ message.group.name }} ({{ message.group.group_id }})
+                                {% else %}
+                                    -
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="message-type-{{ message.message_type }}">
+                                    {{ message.message_type }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if message.message_type == 'text' %}
+                                    {{ message.content|truncate(50) }}
+                                {% else %}
+                                    <em>فایل {{ message.message_type }}</em>
+                                {% endif %}
+                            </td>
+                            <td>{{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-{% if message.is_read %}active{% else %}inactive{% endif %}">
+                                    {{ 'خوانده شده' if message.is_read else 'خوانده نشده' }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.message-type-text { color: #28a745; }
+.message-type-image { color: #17a2b8; }
+.message-type-video { color: #6f42c1; }
+.message-type-audio { color: #fd7e14; }
+.message-type-document { color: #e83e8c; }
+</style>
+{% endblock %}

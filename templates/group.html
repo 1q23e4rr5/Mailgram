@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}گروه {{ group.name }} - Mailgram{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="chat-interface">
+    <div class="chat-header">
+        <div class="user-avatar group-avatar">👥</div>
+        <div>
+            <div style="font-weight: bold;">{{ group.name }}</div>
+            <div style="font-size: 0.8rem; opacity: 0.8;">
+                {{ group.group_id }} • {{ members|length }} عضو
+                {% if group.creator_id == current_user.id %}
+                    • شما سازنده گروه هستید
+                {% endif %}
+            </div>
+        </div>
+        <div style="margin-right: auto;">
+            <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">بازگشت</a>
+            {% if group.creator_id == current_user.id %}
+                <a href="{{ url_for('manage_group_requests', group_id=group.group_id) }}" 
+                   class="btn btn-primary">مدیریت درخواست‌ها</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+        {% for message in messages %}
+        <div class="message {% if message.sender_id == current_user.id %}sent{% else %}received{% endif %}" 
+             data-message-id="{{ message.id }}">
+            <div class="message-bubble">
+                <div class="message-sender" style="font-size: 0.8rem; color: #666; margin-bottom: 0.25rem;">
+                    {{ message.sender.name }}
+                </div>
+                <div class="message-content">
+                    {% if message.message_type == 'text' %}
+                        {{ message.content }}
+                    {% else %}
+                        [فایل {{ message.message_type }}]
+                    {% endif %}
+                </div>
+                <div class="message-time">
+                    {{ message.timestamp.strftime('%H:%M') }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="chat-input-container">
+        <button class="file-upload-btn" id="uploadBtn" title="ارسال فایل">
+            📎
+            <input type="file" id="fileInput" style="display: none;">
+        </button>
+        <textarea class="message-input" id="messageInput" placeholder="پیام خود را در گروه بنویسید..." rows="1"></textarea>
+        <button class="send-btn" id="sendBtn" title="ارسال پیام">
+            ➤
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    window.chatApp.setCurrentGroup('{{ group.group_id }}');
+});
+</script>
+
+<style>
+.group-avatar {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-size: 1.2rem;
+}
+</style>
+{% endblock %}

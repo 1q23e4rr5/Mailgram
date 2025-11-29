@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mailgram{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body data-user-id="{{ current_user.id if current_user.is_authenticated else '' }}" 
+      data-user-name="{{ current_user.name if current_user.is_authenticated else '' }}">
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ url_for('dashboard') }}" class="navbar-brand">📧 Mailgram</a>
+            <ul class="navbar-nav">
+                {% if current_user.is_authenticated %}
+                    {% if current_user.username == 'admin' %}
+                        <li><a href="{{ url_for('admin_dashboard') }}">پنل مدیریت</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('dashboard') }}">داشبورد</a></li>
+                        <li><a href="{{ url_for('create_group') }}">ساخت گروه</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('logout') }}">خروج</a></li>
+                {% else %}
+                    <li><a href="{{ url_for('login') }}">ورود</a></li>
+                    <li><a href="{{ url_for('register') }}">ثبت‌نام</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

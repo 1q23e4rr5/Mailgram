@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}مدیریت درخواست‌های گروه {{ group.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2>مدیریت درخواست‌های عضویت</h2>
+            <p>گروه: {{ group.name }} ({{ group.group_id }})</p>
+        </div>
+        <div class="card-body">
+            {% if requests %}
+            <div class="requests-list">
+                {% for request in requests %}
+                <div class="request-item">
+                    <div class="request-user">
+                        <div class="user-avatar">{{ request.user.name[0] }}</div>
+                        <div class="user-info">
+                            <div class="user-name">{{ request.user.name }}</div>
+                            <div class="user-email">{{ request.user.email_id }}</div>
+                        </div>
+                    </div>
+                    <div class="request-actions">
+                        <a href="{{ url_for('handle_group_request', request_id=request.id, action='approve') }}" 
+                           class="btn btn-success">تأیید</a>
+                        <a href="{{ url_for('handle_group_request', request_id=request.id, action='reject') }}" 
+                           class="btn btn-danger">رد</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-requests">
+                <p>هیچ درخواست عضویت در حال انتظاری وجود ندارد.</p>
+            </div>
+            {% endif %}
+            
+            <div class="back-to-group">
+                <a href="{{ url_for('group_chat', group_id=group.group_id) }}" class="btn btn-primary">
+                    بازگشت به گروه
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.requests-list {
+    margin-bottom: 2rem;
+}
+
+.request-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: white;
+}
+
+.request-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.user-email {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.request-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.no-requests {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
+.back-to-group {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+</style>
+{% endblock %}

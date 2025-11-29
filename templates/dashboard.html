@@ -1,0 +1,200 @@
+{% extends "base.html" %}
+
+{% block title %}داشبورد - Mailgram{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="sidebar">
+        <div class="card">
+            <div class="card-header">پروفایل شما</div>
+            <div class="card-body">
+                <div class="profile-info">
+                    <div class="user-avatar">{{ user.name[0] }}</div>
+                    <div class="profile-details">
+                        <div class="profile-name">{{ user.name }}</div>
+                        <div class="profile-email">{{ user.email_id }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">افزودن مخاطب</div>
+            <div class="card-body">
+                <form action="{{ url_for('add_contact') }}" method="get" class="add-contact-form">
+                    <input type="text" name="email_id" class="form-control" placeholder="شناسه @Mailgram.com" required>
+                    <button type="submit" class="btn btn-primary">افزودن</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">مخاطبین</div>
+            <div class="card-body">
+                <ul class="contact-list" id="contactList">
+                    {% for contact in contacts %}
+                    <li class="contact-item" data-user-id="{{ contact.id }}">
+                        <div class="contact-avatar">
+                            <div class="user-avatar">{{ contact.name[0] }}</div>
+                            <div class="online-status"></div>
+                        </div>
+                        <div class="contact-info">
+                            <div class="contact-name">{{ contact.name }}</div>
+                            <div class="contact-email">{{ contact.email_id }}</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">گروه‌های شما</div>
+            <div class="card-body">
+                <ul class="contact-list" id="groupList">
+                    {% for group in groups %}
+                    <li class="contact-item" data-group-id="{{ group.group_id }}">
+                        <div class="user-avatar group-avatar">👥</div>
+                        <div class="contact-info">
+                            <div class="contact-name">{{ group.name }}</div>
+                            <div class="contact-email">{{ group.group_id }}</div>
+                        </div>
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <div class="card-header">خوش آمدید به Mailgram</div>
+            <div class="card-body">
+                <p>برای شروع چت، یکی از مخاطبین یا گروه‌ها را انتخاب کنید.</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <span class="stat-number">{{ contacts|length }}</span>
+                        <span class="stat-label">مخاطب</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-number">{{ groups|length }}</span>
+                        <span class="stat-label">گروه</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">پیوستن به گروه</div>
+            <div class="card-body">
+                <form action="{{ url_for('join_group_request') }}" method="get" class="join-group-form">
+                    <input type="text" name="group_id" class="form-control" placeholder="شناسه گروه" required>
+                    <button type="submit" class="btn btn-primary">درخواست پیوستن</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact click handlers
+    const contactItems = document.querySelectorAll('#contactList .contact-item');
+    contactItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            if (window.chatApp) {
+                window.chatApp.setCurrentChat(parseInt(userId));
+            }
+        });
+    });
+
+    // Group click handlers
+    const groupItems = document.querySelectorAll('#groupList .contact-item');
+    groupItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const groupId = this.getAttribute('data-group-id');
+            if (window.chatApp) {
+                window.chatApp.setCurrentGroup(groupId);
+            }
+        });
+    });
+});
+
+function reportUser(userId) {
+    const reason = prompt('لطفاً دلیل گزارش این کاربر را وارد کنید:');
+    if (reason) {
+        const formData = new FormData();
+        formData.append('reason', reason);
+        
+        fetch(`/report_user/${userId}`, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                alert('گزارش با موفقیت ثبت شد');
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+            alert('خطا در ثبت گزارش');
+        });
+    }
+}
+</script>
+
+<style>
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-details {
+    flex: 1;
+}
+
+.profile-name {
+    font-weight: bold;
+}
+
+.profile-email {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.add-contact-form,
+.join-group-form {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.add-contact-form .form-control,
+.join-group-form .form-control {
+    flex: 1;
+}
+
+.contact-avatar {
+    position: relative;
+}
+
+.group-avatar {
+    background-color: #4CAF50;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+{% endblock %}

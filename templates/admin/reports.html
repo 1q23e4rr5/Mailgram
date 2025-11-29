@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+
+{% block title %}گزارشات کاربران - Mailgram{% endblock %}
+
+{% block content %}
+<div class="admin-reports">
+    <h1>گزارشات کاربران</h1>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">لیست گزارشات</div>
+        <div class="admin-card-body">
+            {% for report in reports %}
+            <div class="report-item">
+                <div class="report-header">
+                    <strong>گزارش‌دهنده: {{ report.reporter.name }} ({{ report.reporter.email_id }})</strong>
+                    <span class="report-meta">{{ report.timestamp.strftime('%Y-%m-%d %H:%M') }}</span>
+                </div>
+                <div>
+                    <strong>کاربر گزارش شده: {{ report.reported_user.name }} ({{ report.reported_user.email_id }})</strong>
+                </div>
+                <div class="report-reason">
+                    <strong>دلیل گزارش:</strong><br>
+                    {{ report.reason }}
+                </div>
+                <div class="report-actions">
+                    <span class="status-{{ report.status }}">وضعیت: 
+                        {% if report.status == 'pending' %}در انتظار
+                        {% elif report.status == 'reviewed' %}بررسی شده
+                        {% else %}حل شده
+                        {% endif %}
+                    </span>
+                    <a href="{{ url_for('admin_handle_report', report_id=report.id, action='review') }}" 
+                       class="btn btn-primary btn-small">بررسی شده</a>
+                    <a href="{{ url_for('admin_handle_report', report_id=report.id, action='resolve') }}" 
+                       class="btn btn-success btn-small">حل شده</a>
+                </div>
+            </div>
+            {% else %}
+            <p>هیچ گزارشی وجود ندارد.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

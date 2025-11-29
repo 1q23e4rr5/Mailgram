@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}ثبت‌نام در Mailgram{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>ثبت‌نام در Mailgram</h2>
+            <p>حساب کاربری جدید ایجاد کنید</p>
+        </div>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="name">نام کامل</label>
+                <input type="text" id="name" name="name" class="form-control" required 
+                       placeholder="نام و نام خانوادگی خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">شماره تلفن</label>
+                <input type="text" id="phone" name="phone" class="form-control" required 
+                       placeholder="شماره تلفن خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">رمز عبور</label>
+                <input type="password" id="password" name="password" class="form-control" required 
+                       placeholder="رمز عبور قوی انتخاب کنید">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">ثبت‌نام</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>قبلاً حساب کاربری دارید؟ <a href="{{ url_for('login') }}">وارد شوید</a></p>
+        </div>
+
+        <div class="registration-info">
+            <hr>
+            <p style="text-align: center; font-size: 0.9rem; color: #666;">
+                پس از ثبت‌نام، یک شناسه منحصر به فرد<br>
+                با فرمت <strong>username@Mailgram.com</strong><br>
+                برای شما ایجاد خواهد شد
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.registration-info {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #ddd;
+}
+</style>
+{% endblock %}

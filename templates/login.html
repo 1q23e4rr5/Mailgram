@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}ورود به Mailgram{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h2>ورود به Mailgram</h2>
+            <p>برای ادامه وارد حساب کاربری خود شوید</p>
+        </div>
+        
+        <form method="POST" class="auth-form">
+            <div class="form-group">
+                <label for="phone">شماره تلفن</label>
+                <input type="text" id="phone" name="phone" class="form-control" required 
+                       placeholder="شماره تلفن خود را وارد کنید">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">رمز عبور</label>
+                <input type="password" id="password" name="password" class="form-control" required 
+                       placeholder="رمز عبور خود را وارد کنید">
+            </div>
+            
+            <button type="submit" class="btn btn-primary btn-block">ورود</button>
+        </form>
+        
+        <div class="auth-footer">
+            <p>حساب کاربری ندارید؟ <a href="{{ url_for('register') }}">ثبت‌نام کنید</a></p>
+        </div>
+
+        <div class="admin-login-note">
+            <hr>
+            <p style="text-align: center; font-size: 0.9rem; color: #666;">
+                برای ورود به پنل مدیریت:<br>
+                نام کاربری: <strong>admin</strong><br>
+                رمز عبور: <strong>mailgramadmin2025</strong>
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: var(--dark-color);
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.auth-form {
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.btn-block {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+}
+
+.auth-footer {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.admin-login-note {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px dashed #ddd;
+}
+</style>
+{% endblock %}

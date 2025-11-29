@@ -1,0 +1,101 @@
+{% extends "admin/base.html" %}
+
+{% block title %}مدیریت کاربران - Mailgram{% endblock %}
+
+{% block content %}
+<div class="admin-users">
+    <h1>مدیریت کاربران</h1>
+    
+    <div class="card">
+        <div class="card-header">لیست کاربران</div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>نام</th>
+                            <th>شماره تلفن</th>
+                            <th>شناسه</th>
+                            <th>تاریخ ثبت‌نام</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>{{ user.name }}</td>
+                            <td>{{ user.phone }}</td>
+                            <td>{{ user.email_id }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-{% if user.is_active %}active{% else %}inactive{% endif %}">
+                                    {{ 'فعال' if user.is_active else 'غیرفعال' }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <a href="{{ url_for('admin_toggle_user', user_id=user.id) }}" 
+                                   class="btn {% if user.is_active %}btn-danger{% else %}btn-primary{% endif %} btn-small">
+                                    {{ 'غیرفعال' if user.is_active else 'فعال' }}
+                                </a>
+                                <a href="{{ url_for('admin_delete_user', user_id=user.id) }}" 
+                                   class="btn btn-danger btn-small"
+                                   onclick="return confirm('آیا از حذف این کاربر مطمئن هستید؟')">
+                                    حذف
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.admin-table th,
+.admin-table td {
+    padding: 12px;
+    text-align: right;
+    border-bottom: 1px solid #eee;
+}
+
+.admin-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+.admin-table tr:hover {
+    background-color: #f9f9f9;
+}
+
+.status-active {
+    color: green;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: red;
+    font-weight: bold;
+}
+
+.btn-small {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+
+.actions {
+    white-space: nowrap;
+}
+</style>
+{% endblock %}

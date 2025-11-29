@@ -1,0 +1,52 @@
+{% extends "admin/base.html" %}
+
+{% block title %}مدیریت گروه‌ها - Mailgram{% endblock %}
+
+{% block content %}
+<div class="admin-groups">
+    <h1>مدیریت گروه‌ها</h1>
+    
+    <div class="admin-card">
+        <div class="admin-card-header">لیست گروه‌ها</div>
+        <div class="admin-card-body">
+            <div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>نام گروه</th>
+                            <th>شناسه گروه</th>
+                            <th>سازنده</th>
+                            <th>تعداد اعضا</th>
+                            <th>تاریخ ایجاد</th>
+                            <th>وضعیت</th>
+                            <th>عملیات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in groups %}
+                        <tr>
+                            <td>{{ group.id }}</td>
+                            <td>{{ group.name }}</td>
+                            <td>{{ group.group_id }}</td>
+                            <td>{{ group.creator.name }} ({{ group.creator.email_id }})</td>
+                            <td>{{ group.members|length }}</td>
+                            <td>{{ group.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>
+                                <span class="status-{% if group.is_active %}active{% else %}inactive{% endif %}">
+                                    {{ 'فعال' if group.is_active else 'غیرفعال' }}
+                                </span>
+                            </td>
+                            <td class="actions">
+                                <a href="#" class="btn btn-primary btn-small">مشاهده</a>
+                                <a href="#" class="btn btn-danger btn-small">حذف</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
